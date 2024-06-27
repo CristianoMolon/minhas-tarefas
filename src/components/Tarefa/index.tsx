@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import * as S from './styles'
-import { remover, editar } from '../../Store/reducers/tarefas'
+import { remover, editar, alteraStatus } from '../../Store/reducers/tarefas'
 import TarefaClass from '../../models/Tarefa'
-import { BotaoSalvar } from '../../Styles'
+import { Botao, BotaoSalvar } from '../../Styles'
+import * as enums from '../../Utils/enums/Tarefa'
 
 type Props = TarefaClass
 
@@ -30,9 +31,29 @@ const Tarefa = ({
     setDescricao(descricaoOriginal)
   }
 
+  function alteraStatusTarefa(evento: ChangeEvent<HTMLInputElement>) {
+    dispatch(
+      alteraStatus({
+        id,
+        finalizando: evento.target.checked
+      })
+    )
+  }
+
   return (
     <S.Card>
-      <S.titulo>{titulo}</S.titulo>
+      <label htmlFor={titulo}>
+        <input
+          type="checkbox"
+          id={titulo}
+          checked={status === enums.Status.CONCLUÍDO}
+          onChange={alteraStatusTarefa}
+        />
+        <S.titulo>
+          {estaEditando && <em>Editando: </em>}
+          {titulo}
+        </S.titulo>
+      </label>
       <S.Tag parametro="prioridade" prioridade={prioridade}>
         {prioridade}
       </S.Tag>
@@ -73,7 +94,7 @@ const Tarefa = ({
           </>
         ) : (
           <>
-            <S.Botao onClick={() => setEstaEditando(true)}>Editar</S.Botao>
+            <Botao onClick={() => setEstaEditando(true)}>Editar</Botao>
             <S.BotaoCancelar onClick={() => dispatch(remover(id))}>
               Remover
             </S.BotaoCancelar>

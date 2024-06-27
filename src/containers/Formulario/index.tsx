@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom'
 import { BotaoSalvar, Campo, MainContainer, Titulo } from '../../Styles/index'
 import { Form, Opcoes, Opcao } from './styles'
 import * as enums from '../../Utils/enums/Tarefa'
-import Tarefa from '../../models/Tarefa'
 import { cadastrar } from '../../Store/reducers/tarefas'
 
 const Formulario = () => {
@@ -18,15 +17,15 @@ const Formulario = () => {
 
   const cadastrarTarefa = (evento: FormEvent) => {
     evento.preventDefault()
-    const tarefaParaAdicionar = new Tarefa(
-      titulo,
-      prioridade,
-      enums.Status.PENDENTE,
-      descricao,
-      9
-    )
 
-    dispatch(cadastrar(tarefaParaAdicionar))
+    dispatch(
+      cadastrar({
+        titulo,
+        prioridade,
+        descricao,
+        status: enums.Status.PENDENTE
+      })
+    )
     navigate('/')
   }
 
